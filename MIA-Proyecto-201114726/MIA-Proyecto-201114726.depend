@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1470475011 source:/home/iveth/[MIA]Proyecto/-MIA-201114726/MIA-Proyecto-201114726/main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+
