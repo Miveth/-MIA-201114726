@@ -44,8 +44,9 @@ char idn[60];
 
 
 //variable para guardar y evaluar en el analizador
+//estas son variables globales a las que cualquir metodo o funcion podran ingresar
 char cadena1[200];
-
+   int orden=0;
 
 
 
@@ -61,11 +62,11 @@ printf(cadena1);
 
 printf("esta es la cadena resultante: %s \n","fad");
 
-char *dato;
+char dato;
 mecaemal();
 nimodo();
 
-//dato = cadenas();
+//dato = cadenas(cadena1);
 //strcpy(dato, minuscu(cadena1));
 // = minuscu(*cadena1);
 
@@ -170,49 +171,96 @@ int i;
 for(i = 0; cadena1[i];i++)
 cadena1[i]=tolower(cadena1[i]);
 
-printf("JODER: %s\n",cadena1);
+printf("MINUSCULAS: %s\n",cadena1);
 }
 
+//aqui es donde empiezo el analizador
 
 void nimodo(){
 
-char cadena2[20]="";
+   char *token;
 
-for (int s=0;cadena1[s];s++){
-printf("hola");
-if(cadena1[s]!=" "){
-cadena2 [s]= cadena1[s];
-printf("%s\n",cadena2);
-}else{
-cadena2[0] = '/0';
-printf("espacio");
-strcpy( cadena2, "" );
-free(cadena2);
+
+   /* get the first token */
+   token = strtok(cadena1," ");
+
+   /* walk through other tokens */
+   while( token != NULL )
+   {
+      printf( "%s\n", token );
+
+            if(strcmp(token,"mkdisk")==0){
+            orden = 1;
+             printf("esta es una PRUEBA %s\n",token);
+            }
+            else if(strcmp(token,"rmdisk")==0){
+            orden = 2;
+            }
+            else if(strcmp(token,"fdisk")==0){
+            orden = 3;
+            }
+            else if(strcmp(token,"mount")==0){
+            orden = 4;
+            }
+            else if(strcmp(token,"unmount")==0){
+            orden = 5;
+            }
+
+
+            if(orden == 1){
+            evmkdisk(token);
+            }
+            else if(orden ==2){
+            evrmdisk(token);
+            }
+            else if(orden ==3){
+            evfdisk(token);
+            }
+            else if(orden ==4){
+            evmount(token);
+            }
+            else if(orden ==5){
+            evunmount(token);
+            }
+          /*  if(token == "mkdisk"){
+            printf("esta es una PRUEBA %s\n",token);
+            }
+*/
+      token = strtok(NULL, " ");
+   }
+
 }
+
+void evmkdisk(char *token){
+printf("estoy dentro de los mkdisk");
+
+
 }
-
-analizador(cadena2);
-//free(cadena2);//cadena2 = "                     ";
-
+void evrmdisk(char *token){
+}
+void evfdisk(char *token){
+}
+void evmount(char *token){
+}
+void evunmount(char *token){
 }
 //AQUI VAN LAS FUNCIONES CORRESPONDIENTES PARA EL MAIN
- /*char* cadenas(){
+ char* cadenas(char cade[]){
 //char
 
 char* cadena3="";
 int i;
 
-for(i = 0; cadena1[i];i++)
-cadena1[i]=tolower(cadena1[i]);
+for(i = 0; cade[i];i++)
+cade[i]=tolower(cade[i]);
 
 //strncpy(cadena1, c, sizbuffer);
 //printf("%s\n",cadena1);
+//strcpy1(&cadena3,cadena1);
 
-strcpy1(cadena3,cadena1);
-
-return cadena3;
+return cadena1;
 }
-*/
+
 
 /*bool mkdiskfunc(){
  bool respuesta =  false;
