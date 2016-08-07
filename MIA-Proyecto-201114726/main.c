@@ -52,6 +52,7 @@ char cadena1[200];
 
 //AQUI VA EL CODIGO DEL MAIN QUE EJECUTA EL PROGRAMA
 int n2 = 3;
+mkdisk disk;
 
 int main()
 {
@@ -187,11 +188,12 @@ void nimodo(){
    /* walk through other tokens */
    while( token != NULL )
    {
-      printf( "%s\n", token );
+     // printf( "%s\n", token );
+
+
 
             if(strcmp(token,"mkdisk")==0){
             orden = 1;
-             printf("esta es una PRUEBA %s\n",token);
             }
             else if(strcmp(token,"rmdisk")==0){
             orden = 2;
@@ -204,24 +206,13 @@ void nimodo(){
             }
             else if(strcmp(token,"unmount")==0){
             orden = 5;
+            }else
+            {
+            evparametros(token);
             }
 
 
-            if(orden == 1){
-            evmkdisk(token);
-            }
-            else if(orden ==2){
-            evrmdisk(token);
-            }
-            else if(orden ==3){
-            evfdisk(token);
-            }
-            else if(orden ==4){
-            evmount(token);
-            }
-            else if(orden ==5){
-            evunmount(token);
-            }
+
           /*  if(token == "mkdisk"){
             printf("esta es una PRUEBA %s\n",token);
             }
@@ -231,10 +222,80 @@ void nimodo(){
 
 }
 
+void evparametros(char *tok){
+
+   char *token2;
+
+   token2 = strtok(tok, "::");
+
+   /* walk through other tokens */
+   while( token2 != NULL )
+   {
+      printf( " %s\n", token2 );
+
+            if(orden == 1){
+            //evparametros(token);
+            evmkdisk(token2);
+
+            }
+            else if(orden ==2){
+            evrmdisk(token2);
+            }
+            else if(orden ==3){
+            evfdisk(token2);
+            }
+            else if(orden ==4){
+            evmount(token2);
+            }
+            else if(orden ==5){
+            evunmount(token2);
+            }else{
+            printf("EL COMANDO QUE INGRESASTE NO EXISTE VERIFICA \n");
+            break;
+            }
+
+
+      token2 = strtok(NULL, "::");
+   }
+
+}
+int indicativo = 0;
 void evmkdisk(char *token){
 printf("estoy dentro de los mkdisk");
 
+//evparametros(token);
+            if(strcmp(token,"-size")==0){
 
+                indicativo=1;
+             printf("EL TOKEN DE SIZE%s\n",token);
+
+            }
+            else if(strcmp(token,"+unit")==0){
+
+            }
+             else if(strcmp(token,"-path")==0){
+
+            }
+             else if(strcmp(token,"-name")==0){
+
+            }
+             else {
+             lineafinal(token);
+                switch(indicativo){
+                case 1:
+                {
+
+                disk.sise= atoi(token);
+                printf("ESTA ES LA PRUEBA DE SIZE: %d",disk.sise);
+                }break;
+
+
+                }
+             printf("EL TOKEN DE SIZE%s\n",token);
+             }
+
+}
+void lineafinal(){
 }
 void evrmdisk(char *token){
 }
