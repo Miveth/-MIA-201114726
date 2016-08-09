@@ -9,11 +9,14 @@
 
 //AQUI VAMOS A COLOCAR TODOS LOS ESTRUCT PARA LOS COMANDOS QUE SE UTILIZARAN EN CONSOLA
 
+typedef struct {
+char tex[600];
+int valuni;
+}cadenita;
 
 typedef struct{
 
 int sise;
-int valuni;
 char unit[2];
 char path[70];
 char name[60];
@@ -47,16 +50,18 @@ typedef struct{
 char idn[60];
 }umount;
 
+cadenita texto;
 
 //variable para guardar y evaluar en el analizador
 //estas son variables globales a las que cualquir metodo o funcion podran ingresar
-char cadena1[200];
+char cadena1[300];
    int orden=0;
 
 int indicativo = 0;
 int cont =0;
 char *sincomas = "";
 
+char cadecopia[300];
 
 
 //AQUI VA EL CODIGO DEL MAIN QUE EJECUTA EL PROGRAMA
@@ -65,6 +70,7 @@ mkdisk disk;
 
 int main()
 {
+  //  int valor =  remove("prueba/prueba1.dsk");
 
 printf("\nPUEDE INICIAR INGRESE LOS COMANDOS QUE REQUIERA A CONTINUACION...\n");
 scanf(" %[^\n]", cadena1);
@@ -73,7 +79,7 @@ printf(cadena1);
 printf("esta es la cadena resultante: %s \n","fad");
 
 char dato;
-mecaemal();
+minusculas();
 nimodo();
 
 //dato = cadenas(cadena1);
@@ -134,8 +140,11 @@ printf("q boba soy\n");
 
 }*/
 
-void mecaemal(){
+void minusculas(){
 int i;
+
+strcpy(cadecopia,cadena1);
+
 
 for(i = 0; cadena1[i];i++)
 cadena1[i]=tolower(cadena1[i]);
@@ -203,16 +212,19 @@ if(oblichar(disk.unit)==0){
 //disk.unit = "m";
 printf("PERO UNIT ES OPCIONAL SE PROPORCIONARA EL VALOR M \n");
 strcpy(disk.unit,"m");
-disk.valuni = 1000000;
+texto.valuni = 1000000;
 }else{
-disk.valuni = evaluarunidad(disk.unit);
-if((disk.valuni)==0){
+texto.valuni = evaluarunidad(disk.unit);
+if((texto.valuni)==0){
 return;
 }
 }
 
 
-printf("HOLA JAI %d \n",disk.valuni);
+printf(texto.tex);
+
+
+printf("HOLA JAI %d \n",texto.valuni);
 scad(disk.path);
 carpeta(sincomas);
 strcpy(disk.path,sincomas);
@@ -220,8 +232,23 @@ sincomas = "";
 scad(disk.name);
 strcpy(disk.name,sincomas);
 sincomas = "";
-crearchivo(disk.path,disk.name,disk.sise,disk.valuni);
+crearchivo(disk.path,disk.name,disk.sise,texto.valuni);
 //char *wa = cad("fMIG");
+char descrip[600]="mkdisk -size::";
+//  strcat(descrip,carp);
+
+//strcat(descrip,disk.sise);
+/*strcat(descrip," +unit  ::");
+strcat(descrip,disk.unit);
+strcat(descrip," -patxh::");
+strcat(descrip,disk.path);
+strcpy(texto.tex,descrip);
+printf(descrip);
+*/
+char *pp = (char)disk.sise;
+strcat(texto.tex,"\n mkdisk -size \n");
+//printf();
+printf(texto.tex);
 
 
 
@@ -229,12 +256,37 @@ crearchivo(disk.path,disk.name,disk.sise,disk.valuni);
 
 }
 void crearchivo(char *path, char *nombre, int tam, int unid){
+
+struct stat st = {0};
+
 char info[500]="";
 int tot=0;
 
  strcat(info,path);
  strcat(info,nombre);
  printf("la info es %s",info);
+
+ if (stat(info, &st) == -1) {
+//direccion = copia;
+printf("\n EL DISCO NO EXISTE AUN, SE CREARA UNO NUEVO \n");
+printf("VALIDANDO EXTENCION \n");
+char *ret;
+   ret = strchr(nombre, '.');
+   printf("LA EXTENSION ES: \n %s \n",ret);
+
+   if(strcmp(ret,".dsk")==0){
+   printf("LA EXTENSION ES CORRECTA :) ");
+   }else{
+   printf("LA EXTENSION ES INCORRECTA (.dsk), NO SE PUEDE CREAR EL DISCO \n");
+   return;
+   }
+
+   //  val = mkdir("carpeta/",O  0700);
+}else{
+printf("\n EL DISCO YA EXISTE, IMPOSIBLE VOLVER A CREAR\n");
+return;
+}
+
 
 FILE* f = fopen(info,"wb");
 if(f ==NULL){
@@ -249,6 +301,8 @@ fclose(f);
 
 
 FILE *fa = fopen(info,"r+b");
+
+
 if(fa==NULL){
 printf("error al escribir");
 
@@ -256,7 +310,7 @@ printf("error al escribir");
 rewind(fa);
 /*char *adentro = ("mkdisk -size:: %d");
 printf(adentro);*/
-fwrite(&disk,sizeof(disk),1,fa);
+fwrite(&cadecopia,sizeof(cadecopia),1,fa);
 
 }
 fclose(fa);
@@ -503,6 +557,7 @@ void evmkdisk(char *token){
 void lineafinal(){
 }
 void evrmdisk(char *token){
+
 }
 void evfdisk(char *token){
 }
