@@ -38,6 +38,7 @@ particion part4;
 typedef struct {
 char tex[600];
 int valuni;
+int subt;
 }cadenita;
 
 typedef struct{
@@ -56,13 +57,13 @@ char path[60];
 
 typedef struct{
 int size;
-int unit;
+char unit[4];
 char path[60];
-char type[2];
-char fit[3];
+char type[3];
+char fit[6];
 char dele[70];
 char name[60];
-char add[3];
+int add;
 
 }fdisk;
 
@@ -98,14 +99,37 @@ int n2 = 3;
 mbr mbrN;
 mkdisk disk;
 rmdisk rdisk;
-char respuesta;
+fdisk fmdisk;
+
 
  char fech_hora[128];
 
 
+
+char respuesta[3]="";
+
 int main()
+
 {
-  //
+
+//char *ca;
+/*char letra;
+char cab2[4];
+char cab[4] = "hola";
+for(int i = 0; i<4; i++){
+
+letra = cab[i];
+//ca = cab[i]; creo q no funciona bien
+cab2[i] = cab[i];
+printf("%c \n",cab2[i]);
+printf("%c \n",letra);
+printf("%c \n",ca);
+printf("%c \n",cab[i]);
+}
+printf("%c %s  ",letra,cab2);
+
+*/
+
 printf("\nPUEDE INICIAR INGRESE LOS COMANDOS QUE REQUIERA A CONTINUACION...\n");
 while(strcmp(cadena1,"salir")!=0)
 {
@@ -115,12 +139,10 @@ printf(cadena1);
 
 
 char dato;
+orden = 0;
+indicativo = 0;
 minusculas();
 nimodo();
-
-//inicio del proyecto de archivos
-//primera prueba
-//iniciando a hacer el analizador
 
 }
     return 0;
@@ -135,13 +157,41 @@ nimodo();
 void minusculas(){
 int i;
 
+
+strcpy(disk.name,"");
+strcpy(disk.unit,"");
+strcpy(disk.name,"");
+
+disk.sise = 0;
+
+fmdisk.add = 0;
+strcpy(fmdisk.name,"");
+strcpy(fmdisk.dele,"");
+strcpy(fmdisk.fit,"");
+strcpy(fmdisk.path,"");
+strcpy(fmdisk.unit,"");
+strcpy(fmdisk.type,"");
+strcpy(rdisk.path,"");
+
+texto.subt =0;
+texto.valuni = 0;
+
+fmdisk.size = 0;
+//if(cadena1[0]==1)
+
+if(cadena1[0]==35 || cadena1==10 || cadena1 ==32){
+    orden = 10;
+
+    return; }
 strcpy(cadecopia,cadena1);
 
 
 for(i = 0; cadena1[i];i++)
 cadena1[i]=tolower(cadena1[i]);
 
-printf("MINUSCULAS: %s\n",cadena1);
+
+
+
 }
 
 //aqui es donde empiezo el analizador
@@ -149,6 +199,7 @@ printf("MINUSCULAS: %s\n",cadena1);
 void nimodo(){
 
    char *token;
+
  //   printf("cadena original %s \n",cadena1);
    /* get the first token */
    token = strtok(cadena1," ");
@@ -180,6 +231,8 @@ void nimodo(){
             }
             else if(strcmp(token,"salir")==0){
             orden = 0;
+            }else if(token[0]==35){
+            return;
             }else if(orden == 10){
             return;}
             else{
@@ -197,8 +250,10 @@ void nimodo(){
    // evcont();
    escribir();
 
+    }else{
+    cont = 0;
     }
-   printf("ALFINAL DEL PRIMER WHILE %s \n",cadena1);
+ //  printf("ALFINAL DEL PRIMER WHILE %s \n",cadena1);
 
 }
 
@@ -245,8 +300,12 @@ c1=0;
 
 	   if(cade1[i]=='\\' && i==strlen(cade1)-1){
        cade1 = cade4;
-       printf("tiene continuacion");
+       printf("tiene continuacion....");
        cont = 1;
+       break;
+      }else if(cade1[i]=='\n' && i==strlen(cade1)-1){
+       cade1 = cade4;
+     //  printf("salto de linea encontrado y detectado yiji ");
        break;
       }
       /*else if(i == strlen(cade1)-1){
@@ -257,7 +316,7 @@ c1=0;
 
 	}
 
-	printf("CADENA PRUEBA2 %s\n",cade1);
+	//printf("CADENA PRUEBA2 %s\n",cade1);
 
 	  evorden(cade1);
 
@@ -269,11 +328,14 @@ void escribir(){
 if(orden == 1){
 
     if(oblint(disk.sise)==0 || oblichar(disk.name)==0 || oblichar(disk.path)==0){
+    printf("PARAMETRO CHAR OBLIGATORIO VACIO \n");
+
     return;
     }
+  //  printf("/n este es el unit ahora /n %s",disk.unit);
     if(oblichar(disk.unit)==0){
 //disk.unit = "m";
-    printf("PERO UNIT ES OPCIONAL SE PROPORCIONARA EL VALOR M \n");
+    printf("UNIT ES OPCIONAL SE PROPORCIONARA EL VALOR M \n");
     strcpy(disk.unit,"m");
     texto.valuni = 1000000;
     }else{
@@ -285,7 +347,12 @@ if(orden == 1){
 
     printf(texto.tex);
 //printf("HOLA JAI %d \n",texto.valuni);
-    scad(disk.path);
+
+//    disk.path = sincomas;
+
+    buscpath();
+    strcpy(rdisk.path,sincomas);
+  //  scad(disk.path);
     carpeta(sincomas);
     strcpy(disk.path,sincomas);
     sincomas = "";
@@ -293,34 +360,206 @@ if(orden == 1){
     strcpy(disk.name,sincomas);
     sincomas = "";
     crearchivo(disk.path,disk.name,disk.sise,texto.valuni);
-/*
-char *pp = (char)disk.sise;
-strcat(texto.tex,"\n mkdisk -size \n");
-//printf();
-printf(texto.tex);*/
 
 }else if(orden == 2){
 
+    buscpath();
+    strcpy(rdisk.path,sincomas);
     if(oblichar(rdisk.path)==0){
+    printf("PARAMETRO CHAR OBLIGATORIO VACIO \n");
+
     return;
     }
-    scad(rdisk.path);
+
     strcpy(rdisk.path,sincomas);
     compdisco(rdisk.path);
+
+}else if(orden == 3){
+
+    if(oblichar(fmdisk.path)==0 || oblint(fmdisk.size)==0 || oblichar(fmdisk.name)==0){
+    printf("PARAMETRO CHAR OBLIGATORIO VACIO \n");
+
+    return;
+    }
+
+     if(oblichar(fmdisk.unit)==0){
+//disk.unit = "m";
+    printf("UNIT ES OPCIONAL SE PROPORCIONARA EL VALOR k \n");
+    strcpy(disk.unit,"k");
+    texto.valuni = 1000;
+    }else{
+    texto.valuni = evaluarunidad(fmdisk.unit);
+        if((texto.valuni)==0){
+        return;
+        }
+    }
+    if(oblichar(fmdisk.type)==0){
+    printf("TYPE DEFAULT P \n");
+    strcpy(fmdisk.type,"p");
+
+    }else{
+    if(evaluartype(fmdisk.type)==0){
+    return;}
+    }
+    if(oblichar(fmdisk.fit)==0){
+    printf("FIT DEFAULT WF \n");
+    strcpy(fmdisk.type,"wf");
+    }else{
+    if(evaluarfit(fmdisk.fit)==0){
+    return;
+    }
+    }
+    if(oblichar(fmdisk.dele)==0){
+    }else{
+    if(evaluardele(fmdisk.dele)==0){
+    return;
+    }
+    }
+
+particiones();
+
 
 }else if(orden == 6){
     if(oblichar(exec)==0){
     return;
     }
-    scad(exec);
+    buscpath();
     strcpy(exec,sincomas);
     leerscript(exec);
 }
-
 orden = 0;
 
 
 }
+
+void particiones(){
+printf("entre a particiones");
+int total =  fmdisk.size*texto.valuni ;
+buscpath();
+strcpy(fmdisk.path,sincomas);
+evarchivo(fmdisk.path);
+int totd = tambr(fmdisk.path);
+int totp = mbrN.part1.part_size+mbrN.part2.part_size+mbrN.part3.part_size+mbrN.part4.part_size;
+int totdi=totd - totp;
+
+if(fmdisk.add == 0){
+}
+//crear particion
+if(totdi < fmdisk.size){
+}
+
+}
+
+int evarchivo(char *path){
+struct stat st = {0};
+char info[500]="";
+ strcat(info,path);
+
+ char *ret;
+   ret = strchr(path, '.');
+   if(ret ==NULL){
+   printf("LA EXTENSION ES INCORRECTA (.dsk) \n");
+   return 0;
+   }
+
+   if(strcmp(ret,".dsk")==0){
+  // printf("EXTENSION CORRECTA");
+   }else{
+   printf("LA EXTENSION ES INCORRECTA,(.dsk) \n");
+   return 0;
+   }
+
+    if (stat(info, &st) == -1) {
+   printf("\n EL ARCHIVO NO EXISTE \n");
+    return 0;
+}else{
+printf("\n EL DISCO A SIDO ENCONTRADO CON EXITO!!! \n");
+return 1;
+}
+
+}
+
+int tambr(char *archivo){
+
+int tam=0;
+FILE* fe = fopen(archivo,"rb");
+//printf("%s",disco.name);
+//system("cls");
+if(fe==NULL){
+printf("otro grave error\n");
+
+}else{
+mbr mbrN2;
+fread(&mbrN2,sizeof(mbrN2),1,fe);
+
+printf("%d   %s   %d",mbrN2.mbr_tam,mbrN2.fecha_crea,mbrN2.mbr_asig);
+tam = mbrN2.mbr_tam;
+fclose(fe);
+}
+
+return tam;
+}
+
+int evaluardele(char *dele){
+if(strcmp(dele,"fast")== 0 || strcmp(dele,"full")==0){
+printf("TIPO DE ELIMINACION CORRECTO \n");
+return 1;
+}
+
+printf("TIPO DE ELIMINACION INCORRECTO \n");
+orden = 0;
+indicativo = 0;
+return 0;
+
+
+}
+int evaluarfit(char *fit){
+printf("ESte es el fit");
+if(strcmp(fit,"bf")== 0 || strcmp(fit,"wf")==0 || strcmp(fit,"ff")==0){
+printf("TIPO DE AJUSTE CORRECTO \n");
+return 1;
+}
+
+printf("TIPO DE AJUSTE INCORRECTO \n");
+orden = 0;
+indicativo = 0;
+return 0;
+
+
+}
+int evaluartype(char *tipo){
+if(strcmp(tipo,"p")== 0 || strcmp(tipo,"l")==0 || strcmp(tipo,"e")==0){
+printf("TIPO DE PARTICION CORRECTA \n");
+return 1;
+}
+
+printf("TIPO DE PARTICION INCORRECTA \n");
+orden = 0;
+indicativo = 0;
+return 0;
+
+}
+void buscpath(){
+
+   char *token;
+ //   printf("cadena original %s \n",cadena1);
+   /* get the first token */
+//   token = strtok(cadena1," ");
+  // printf("cadena de copia %s ",cadecopia);
+            token=strtok(cadecopia,"\"");
+
+    while (token !=NULL){
+    if(token[0]==47){
+    sincomas = token;
+ //  printf("este es sin comas %s ",sincomas);
+    return;
+    }
+ //   printf("este es sin comas %s ",token);
+    token=strtok(NULL,"\"");
+    }
+
+}
+
 void compdisco(char *path){
 
 struct stat st = {0};
@@ -336,7 +575,7 @@ char info[500]="";
    }
 
    if(strcmp(ret,".dsk")==0){
-   printf("PARAMETROS DE BUSQUEDA CORRECTOS");
+//   printf("PARAMETROS DE BUSQUEDA CORRECTOS");
    }else{
    printf("LA EXTENSION ES INCORRECTA, EXTENSION VALIDA PARA ELIMINAR (.dsk) \n");
    return;
@@ -359,26 +598,26 @@ printf("\n EL DISCO EXISTENTE, ESTA SEGURO DE ELIMINAR? S\N \n");
 
 scanf(" %[^\n]", respuesta);
 
-respuesta=tolower(respuesta);
-
-printf(respuesta);
-int valor =  remove("prueba/prueba1.dsk");
+if(strcmp(respuesta,"s")==0 || strcmp(respuesta,"S")==0){
+int valor =  remove(path);
 if(valor ==0){
 printf("DISCO REMOVIDO CON EXITO \n");
 }else{printf("NO SE PUDO ELIMINAR, VUELVA A INTENTARLO \n");}
+}
+orden = 10;
 
-
-//return;
+return;
 }
 
 
 }
+
 void crearchivo(char *path, char *nombre, int tam, int unid){
 
 struct stat st = {0};
 
 char info[500]="";
-int tot=0;
+
 
  strcat(info,path);
  strcat(info,nombre);
@@ -417,8 +656,11 @@ return;
 FILE* f = fopen(info,"wb");
 if(f ==NULL){
 printf("error en el archivo\n");
+   return;
+
 }else{
-tot = tam*unid;
+int tot = tam*unid;
+texto.subt = tam*unid;
 //fwrite(&n,4,100,f);
 fseek(f,tot,SEEK_SET);
 fputs("/0",f);
@@ -434,6 +676,7 @@ FILE *fa = fopen(info,"r+b");
 
 if(fa==NULL){
 printf("error al escribir");
+   return;
 
 }else{
 rewind(fa);
@@ -445,19 +688,6 @@ fwrite(&mbrN,sizeof(mbrN),1,fa);
 fclose(fa);
 
 /*
-FILE* fe = fopen(archivo,"rb");
-printf("%s",disco.name);
-//system("cls");
-if(fe==NULL){
-printf("otro grave error\n");
-
-}else{
-mkdisk disco2;
-fread(&disco2,sizeof(disco),1,fe);
-
-printf("%d   %s",disco2.sise,disco2.name);
-
-fclose(fe);
 
 }*/
 }
@@ -510,17 +740,21 @@ FILE *script;
 
 
 }
+int aument = 0;
 
 void irmbr(){
 if(orden ==1){
 
-mbrN.mbr_tam =  disk.sise;
+mbrN.mbr_tam =  texto.subt;
 optHora();
 strcpy(mbrN.fecha_crea,fech_hora);
-mbrN.mbr_asig = 0;
+mbrN.mbr_asig = aument;
+aument++;
+
 
 strcpy(mbrN.part1.part_name,"PRIMARIA 1");
 strcpy(mbrN.part1.part_status,"OFF");
+strcpy(mbrN.part1.part_type,"P");
 strcpy(mbrN.part2.part_name,"PRIMARIA 2");
 strcpy(mbrN.part2.part_status,"OFF");
 strcpy(mbrN.part3.part_name,"PRIMARIA 3");
@@ -555,10 +789,12 @@ printf("EL NUEVO PATH ES: %s \n",sincomas);
 void carpeta(char *carp){
 struct stat st = {0};
 char direccion[300]  = "mkdir -p ";
+strcat(direccion,"\'");
 
 if (stat(carp, &st) == -1) {
 printf("Se crearan nuevos directorios, CARPETA DEL PATH NO ENCONTRADA  %s\n ",carp);
   strcat(direccion,carp);
+  strcat(direccion,"\'");
   system(direccion);
 
 }else{
@@ -581,21 +817,24 @@ return 1000000;
 }
 if(strcmp(parametro,"k")==0){
 return 1000;
-}else{
+}
+if(strcmp(parametro,"b")==0 && orden == 3){
+return 1;
+}
+else{
 return 0;}
 }
 
 
 int oblichar(char *parametro){
 if(strcmp(parametro,"")==0){
-printf("PARAMETRO OBLIGATORIO VACIO, NO SE PUEDE ESCRIBIR EL ARCHIVO\n");
 return 0;
 }
 return 1;
 }
 int oblint(int parametro){
 if(parametro<1){
-printf("PARAMETRO OBLIGATORIO VACIO, NO SE PUEDE ESCRIBIR EL ARCHIVO\n");
+printf("PARAMETRO ENTERO OBLIGATORIO VACIO\n");
 return 0;
 }
 return 1;
@@ -643,7 +882,10 @@ void evorden(char *token2){
             }
             else if(orden == 6){
             evexec(token2);
-            }else{
+            }
+            else if(orden == 10){
+            return;}
+            else{
             printf("EL COMANDO INGRESADO NO EXISTE, VERIFICA ANTES DE VOLVER A INTENTAR \n");
             orden = 10;
 
@@ -677,27 +919,25 @@ void evmkdisk(char *token){
                 disk.sise= atoi(token);
                 /*if(disk.sise==0){
                 }*/
-                printf("ESTA ES LA PRUEBA DE SIZE: %d \n",disk.sise);
-
-               // printf("el indicativo %d la cadena %s orden %d\n",indicativo,cadena1,orden);
-                break;
+//                printf("ESTA ES LA PRUEBA DE SIZE: %d \n",disk.sise);
+              break;
                 case 2:
                // disk.unit = token;
                 strcpy(disk.unit,token);
-                printf("prueba para el unit %s \n",disk.unit);
+  //              printf("prueba para el unit %s \n",disk.unit);
                 break;
                 case 3:
                 strcpy(disk.path,token);
-                 printf("prueba para el path %s \n",disk.path);
+    //             printf("prueba para el path %s \n",disk.path);
                // disk.path = token;
                 break;
                 case 4:
                 strcpy(disk.name,token);
-                 printf("prueba para el nombre %s \n",disk.name);
+      //           printf("prueba para el nombre %s \n",disk.name);
                 //disk.name = token;
                 break;
                 default:
-                printf("GRAVE ERROR");
+                printf("PUEDE QUE TENGA ALGUN ERROR, VERIFIQUE  \n");
                 }
             // printf("EL TOKEN DE SIZE%s\n",token);
             indicativo = 0;
@@ -714,13 +954,85 @@ printf("estoy en el evrmdisk \n");
                }else if(indicativo == 1){
 
                strcpy(rdisk.path,token);
-                 printf("prueba para el path %s \n",rdisk.path);
+             //    printf("prueba para el path %s \n",rdisk.path);
 
                }
 
 
 }
 void evfdisk(char *token){
+
+            if(strcmp(token,"-size")==0 ){
+             indicativo=1;
+            }else if(strcmp(token,"+unit")==0){
+                indicativo=2;
+            } else if(strcmp(token,"-path")==0){
+              indicativo=3;
+            } else if(strcmp(token,"-name")==0){
+                indicativo =4;
+            } else if(strcmp(token,"+type")==0){
+                indicativo =5;
+            } else if(strcmp(token,"+fit")==0){
+                indicativo =6;
+            } else if(strcmp(token,"+delete")==0){
+                indicativo =7;
+            } else if(strcmp(token,"+add")==0){
+                indicativo =8;
+            }
+             else {
+
+             lineafinal(token);
+                switch(indicativo){
+
+                case 1:
+                fmdisk.size= atoi(token);
+                printf("ESTA ES LA PRUEBA DE SIZE: %d \n",fmdisk.size);
+
+               // printf("el indicativo %d la cadena %s orden %d\n",indicativo,cadena1,orden);
+                break;
+                case 2:
+               // disk.unit = token;
+                strcpy(fmdisk.unit,token);
+                printf("prueba para el unit %s \n",fmdisk.unit);
+                break;
+                case 3:
+                strcpy(fmdisk.path,token);
+                 printf("prueba para el path %s \n",fmdisk.path);
+               // disk.path = token;
+                break;
+                case 4:
+                strcpy(fmdisk.name,token);
+                 printf("prueba para el nombre %s \n",fmdisk.name);
+                //disk.name = token;
+                break;
+                case 5:
+                strcpy(fmdisk.type,token);
+                 printf("prueba para el type %s \n",fmdisk.type);
+                //disk.name = token;
+                break;
+                case 6:
+                strcpy(fmdisk.fit,token);
+                 printf("prueba para el fit %s \n",fmdisk.fit);
+                //disk.name = token;
+                break;
+                case 7:
+                strcpy(fmdisk.dele,token);
+                 printf("prueba para el dele %s \n",fmdisk.dele);
+                //disk.name = token;
+                break;
+                case 8:
+                fmdisk.add= atoi(token);
+                 printf("prueba para el add %d \n",fmdisk.add);
+                //disk.name = token;
+                break;
+                default:
+                printf("GRAVE ERROR");
+                }
+            // printf("EL TOKEN DE SIZE%s\n",token);
+            indicativo = 0;
+             }
+
+
 }
 void evmount(char *token){
 }
@@ -735,15 +1047,12 @@ void evexec(char *token){
                }else if(indicativo == 1){
 
                  strcpy(exec,token);
-                 printf("prueba para el path %s \n",exec);
+           //      printf("prueba para el path %s \n",exec);
 
                }
 
 
 }
-
-
-
 
 
 
